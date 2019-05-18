@@ -121,7 +121,13 @@ class matlabEnv(gym.Env):
         if matlab_function(self.x, self.y)==0:
             self.is_optimized=True
 
+
         #remaining_steps = self.TOTAL_TIME_STEPS - self.curr_step
+        remaining_steps = self.TOTAL_TIME_STEPS - self.curr_step
+        time_is_over = (remaining_steps <= 0)
+        finish = time_is_over and not self.is_optimized
+        if finish:
+            self.is_optimized = True  # abuse this a bit
 
 
     def _get_reward(self):
