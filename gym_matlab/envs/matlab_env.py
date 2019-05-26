@@ -35,8 +35,9 @@ class matlabEnv(gym.Env):
         self.__version__ = "0.1.0"
         logging.info("matlabEnv - Version {}".format(self.__version__))
         # General variables defining the environment
-        self.x = np.random.randint(1,10000)
-        self.y = np.random.randint(1,10000)
+        self.xmin, self.ymin, self.xmax, self.ymax= 0,0, 100, 100 
+        self.x = np.random.randint(self.xmin,self.xmax)
+        self.y = np.random.randint(self.ymin,self.ymax)
         self.TOTAL_TIME_STEPS = 100
 
         self.dxdy = [(dx, dy) for dx in [-0.1,0,0.1] for dy in [-0.1,0,0.1]]
@@ -49,14 +50,13 @@ class matlabEnv(gym.Env):
 
         self.curr_step = -1
 
-
+        self.cost = 100000#10^5
         self.is_optimized = False
+        
 
         # Observations are the current model input 
-        low = np.array([0.0,  # remaining_tries
-                        ])
-        high = np.array([self.TOTAL_TIME_STEPS,  # remaining_tries
-                         ])
+        low = np.array([self.xmin,self.ymin])
+        high = np.array([self.xmax, self.ymax])
         self.observation_space = spaces.Box(low, high, dtype=np.float32)
 
         # Store what the agent tried
@@ -78,9 +78,26 @@ class matlabEnv(gym.Env):
         #self.action_space.n is max possible actions (ie 9)
         #dxdy= self.dxdy[int(self.action_space.n *random.random())]
         dxdy= self.dxdy[int(action % self.action_space.n) ]
+
+
+        #self.cost = matlab_function(dxdy[0]*self.x, dxdy[1]*self.y)
         self.x += dxdy[0]*self.x
         self.y += dxdy[1]*self.y
-        if matlab_function(self.x, self.y)==0:
+
+        #make sure inputs stay in the initial range
+        if self.x > self.xmax:
+            self.x = self.xmax
+        if self.x < self.xmin:
+            self.x = self.xmin
+        if self.y > self.ymax:
+            self.y = self.ymax
+        if self.y < self.ymin:
+            self.y = self.ymin
+
+        
+        self.cost = matlab_function(self.x, self.y)
+
+        if self.cost==0:
             self.is_optimized=True
 
 
@@ -95,22 +112,23 @@ class matlabEnv(gym.Env):
         if self.is_optimized:
             return 0.0
         else:
-            return -matlab_function(self.x,self.y)
+            return -self.cost
 
     def reset(self):
         self.curr_step = -1
         self.curr_episode += 1
         self.action_episode_memory.append([])
         self.is_optimized = False
-        self.x = np.random.randint(1,10000)
-        self.y = np.random.randint(1,10000)
+        self.cost = 100000
+        self.x = np.random.randint(self.xmin,self.xmax)
+        self.y = np.random.randint(self.ymin,self.ymax)
         return self._get_state()
 
     def _render(self, mode='human', close=False):
         pass
 
     def _get_state(self):
-        ob = [self.TOTAL_TIME_STEPS - self.curr_step]
+        ob = [self.x, self.y]#[self.TOTAL_TIME_STEPS - self.curr_step]
         return ob
 
     def seed(self, seed):
