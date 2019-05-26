@@ -18,17 +18,13 @@ from gym import spaces
 import cfg_load
 import gym
 import numpy as np
+from matlab_function import matlab_function
 
 
 path = 'config.yaml'  # always use slash in packages
 filepath = pkg_resources.resource_filename('gym_matlab', path)
 config = cfg_load.load(filepath)
 logging.config.dictConfig(config['LOGGING'])
-
-
-def matlab_function(x, y):
-    #cost/error
-    return np.power(x,2) + np.power(y, 2)
 
 class matlabEnv(gym.Env):
     def __init__(self):
