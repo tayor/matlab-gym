@@ -24,10 +24,22 @@ filepath = pkg_resources.resource_filename('gym_matlab', path)
 config = cfg_load.load(filepath)
 logging.config.dictConfig(config['LOGGING'])
 
+import matlab.engine
+import numpy as np
+eng = matlab.engine.start_matlab()
+
+def matlab_function(x, y):
+    a = matlab.double([x])#always pass a list
+    b = matlab.double([y])
+    result = eng.simulate(a, b)
+    return np.array(result)[0]
+
+
+"""
 def matlab_function(x, y):
     #cost/error
     return np.power(x,2) + np.power(y, 2)
-
+"""
 
 class matlabEnv(gym.Env):
     def __init__(self):
@@ -98,6 +110,7 @@ class matlabEnv(gym.Env):
 
         if self.cost==0:
             self.is_optimized=True
+            #eng.quit()
 
 
         #remaining_steps = self.TOTAL_TIME_STEPS - self.curr_step
@@ -109,6 +122,7 @@ class matlabEnv(gym.Env):
 
     def _get_reward(self):
         if self.is_optimized:
+            #eng.quit()
             return 0.0
         else:
             return -self.cost
