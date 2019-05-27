@@ -18,8 +18,6 @@ from gym import spaces
 import cfg_load
 import gym
 import numpy as np
-from matlab_function import matlab_function
-
 
 path = 'config.yaml'  # always use slash in packages
 filepath = pkg_resources.resource_filename('gym_matlab', path)
