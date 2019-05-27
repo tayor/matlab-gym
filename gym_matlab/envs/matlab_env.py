@@ -26,6 +26,11 @@ filepath = pkg_resources.resource_filename('gym_matlab', path)
 config = cfg_load.load(filepath)
 logging.config.dictConfig(config['LOGGING'])
 
+def matlab_function(x, y):
+    #cost/error
+    return np.power(x,2) + np.power(y, 2)
+
+
 class matlabEnv(gym.Env):
     def __init__(self):
         self.__version__ = "0.1.0"
