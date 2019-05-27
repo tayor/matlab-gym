@@ -49,7 +49,7 @@ class matlabEnv(gym.Env):
         self.xmin, self.ymin, self.xmax, self.ymax= 0,0, 100, 100 
         self.x = np.random.randint(self.xmin,self.xmax)
         self.y = np.random.randint(self.ymin,self.ymax)
-        self.TOTAL_TIME_STEPS = 100
+        self.TOTAL_TIME_STEPS = 10
 
         self.dxdy = [(dx, dy) for dx in [-0.1,0,0.1] for dy in [-0.1,0,0.1]]
         # [-0.1, 0, 0.1] for x and [-0.1, 0, 0.1] for y
