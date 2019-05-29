@@ -27,12 +27,21 @@ logging.config.dictConfig(config['LOGGING'])
 import matlab.engine
 import numpy as np
 eng = matlab.engine.start_matlab()
+eng.cd('/content')
 
+"""
 def matlab_function(x, y):
     a = matlab.double([x])#always pass a list
     b = matlab.double([y])
     result = eng.plus(eng.power(a, 2), eng.power(b,2))#eng.simulate(a, b)
     return result#np.array(result)
+"""
+
+def matlab_function(x, y):
+    a = matlab.double([x])#always pass a list
+    b = matlab.double([y])
+    result = eng.simulate(a, b)
+    return np.array(result)[0]
 
 
 """
