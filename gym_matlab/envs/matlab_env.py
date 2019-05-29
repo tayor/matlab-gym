@@ -32,7 +32,7 @@ def matlab_function(x, y):
     a = matlab.double([x])#always pass a list
     b = matlab.double([y])
     result = eng.plus(eng.power(a, 2), eng.power(b,2))#eng.simulate(a, b)
-    return np.array(result)
+    return result#np.array(result)
 
 
 """
