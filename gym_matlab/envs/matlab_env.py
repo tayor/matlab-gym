@@ -31,7 +31,7 @@ eng = matlab.engine.start_matlab()
 def matlab_function(x, y):
     a = matlab.double([x])#always pass a list
     b = matlab.double([y])
-    result = eng.simulate(a, b)
+    result = eng.plus(eng.power(a, 2), eng.power(b,2))#eng.simulate(a, b)
     return np.array(result)[0]
 
 
