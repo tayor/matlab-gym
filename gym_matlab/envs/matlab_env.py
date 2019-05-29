@@ -115,7 +115,7 @@ class matlabEnv(gym.Env):
             self.y = self.ymin
 
         
-        self.cost = matlab_function(self.x, self.y)
+        self.cost = matlab_function(self.x, self.y).tolist()[0]
 
         if self.cost==0:
             self.is_optimized=True
